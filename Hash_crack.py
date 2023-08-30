@@ -2,6 +2,8 @@ import hashlib
 import base58
 import base64
 import os
+import html
+import urllib.parse
 def find_hash_match(hash_type, hash_value, wordlist_path):
     with open(wordlist_path, 'r', errors='ignore') as wordlist:
         for line in wordlist:
@@ -19,7 +21,8 @@ def detect_hash_type(hash_value):
         64: "sha256",
         56: "sha224",
         96: "sha384",
-        128: "sha512"
+        128: "sha512",
+        128: "sha3_512"
     }
     
     hash_length = len(hash_value)
@@ -40,6 +43,12 @@ def decode_base58(encoded_value):
 
 def decode_base64(encoded_value):
     return base64.b64decode(encoded_value).decode()
+
+def decode_html(encoded_value):
+    return html.unescape(encoded_value)
+
+def decode_url(encoded_value):
+    return urllib.parse.unquote(encoded_value)
 
 def clear_terminal():
     os.system('clear')  # For Linux/macOS
@@ -94,6 +103,18 @@ if __name__ == "__main__":
         try:
             decoded_value = decode_base64(hash_value)
             print("Decoded using Base64:")
+        except:
+            pass
+
+        try:
+            decoded_value = decode_html(hash_value)
+            print("Decoded using HTML:")
+        except:
+            pass
+            
+        try:
+            decoded_value = decode_url(hash_value)
+            print("Decoded using URL:")
         except:
             pass
         
